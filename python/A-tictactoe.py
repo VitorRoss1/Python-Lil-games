@@ -6,6 +6,7 @@
 
 #00------------------------------------------------------------------------
 table = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']]
+plays = 0
 
 #1F------------------------------------------------------------------------
 
@@ -20,20 +21,36 @@ def game_still_on():
 
 #2F------------------------------------------------------------------------
 acceptable_inputs = range(0, 9)
-def user_position_input():
-    position_index = 'DEFAULT'        
 
-    while not position_index.isdigit() or int(position_index) not in acceptable_inputs:
+def user_position_input():
+    while True:
          print("Welcome to tic tac toe!")
          print("[0 1 2]")
          print("[3 4 5]")
          print("[6 7 8]")
-         print("type a number from 0 to 8!")
-         position_index = input("select a position: ")
-         if position[position_index] != ' ':
-            position_index = input("select a position not occupied: ")
+         print("Select a position from 0 to 8!")
+         print("And make sure it isn't already occupied.")
+         raw_position = input("select a position: ") 
 
-    return int(position_index)
+    #CheckPoints
+         if not raw_position.isdigit():                  
+            continue                   
+            
+         position = int(raw_position) #using raw_position first bc the input could be something other than a number. so if i tried to typecast it, an error would occour AND .isdigit() only works for strings
+                                      
+         if position not in acceptable_inputs:     #knowing position is a number and converted to integer
+            print("Invalid input (Not in range(0-8))")
+            continue 
+         
+         #Conversion algorithm
+         row = (position) // 3      
+         col = (position) % 3
+
+         if not table[row][col] == ' ':
+            print("Invalid input (Position occupied)")
+            continue 
+         
+         return position #passed the checkpoints the return ends the function with the ''infinite'' while true loop
 
 #3F------------------------------------------------------------------------
 def display_table(table):
@@ -46,8 +63,7 @@ xorball = 0
 def update_table(position):
  global xorball                  #scope
 
- #Conversion algorithm
- row = (position) // 3           #'//'floor division = integer output
+ row = (position) // 3         #'//'floor division = integer output  
  col = (position) % 3
 
  if xorball%2 == 0:
@@ -57,37 +73,44 @@ def update_table(position):
  xorball += 1
 
 #5F------------------------------------------------------------------------ CHECKING
+victory = False
 def check_victory(table):
-   global isGameOn
  #checking rows and columns
    for col in range(0,3):
       if table[0][col] == table[1][col] == table[2][col] and table[0][col] != ' ' : #checks if not empty too
-        print("Win :)")
-        isGameOn = False
+        winner = table[0][col]                  #Catches if the winner is X or O             
+        print(f"{winner} won :P ")              #custom message
+        return True
    for row in range(0,3):
       if table[row][0] == table[row][1] == table[row][2] and table[row][0] != ' ':
-        print("Win :)")
-        isGameOn = False
+        winner = table[row][0]                             
+        print(f"{winner} won :P ")   
+        return True
  #Diagonals
    if table[0][0] == table[1][1] == table[2][2] and table[0][0] != ' ':
-        print("Win :)")
-        isGameOn = False
-   elif table[0][2] == table[1][1] == table[2][0] and table[0][2] != ' ':
-        print("Win :)")
+        winner = table[0][0]                             
+        print(f"{winner} won :P ")   
         return True
-   print("Not a Win")
-   isGameOn = True
+   elif table[0][2] == table[1][1] == table[2][0] and table[0][2] != ' ':
+        winner = table[0][2]                             
+        print(f"{winner} won :P ")   
+        return True
+   return False
    
 
 #66------------------------------------------------------------------------
 #Call order
 isGameOn = game_still_on() #ask's if he/she wants to play
 
-while not isGameOn:
-  position = user_position_input() #ask's for the position to be marked
-  update_table(position)          
-  display_table(table)                  
-  victory = check_victory(table)   #Checks for victory
+if isGameOn:
+   while not victory and plays < 9:
+     display_table(table) 
+     position = user_position_input() #ask's for the position to be marked
+     update_table(position)                        
+     victory = check_victory(table)   #Checks for victory
+     plays +=1
+     if not victory:  # if after 8 plays no victory was achieved(scaped the not victory loop bc plays == 9)
+        print("TIE :| ") 
 
 
 
