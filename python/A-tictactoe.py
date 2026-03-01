@@ -13,7 +13,7 @@ plays = 0
 def game_still_on():
    choice = 'default'                      #so it goes through the while on the first time
    while choice not in ['Y','N']:          #keep asking
-      choice = input("Wanna play mate?  Y/N")
+      choice = input("Wanna play, mate?  Y/N ")
    if choice == 'Y':
     return True
    elif choice == 'N':
@@ -24,7 +24,6 @@ acceptable_inputs = range(0, 9)
 
 def user_position_input():
     while True:
-         print("Welcome to tic tac toe!")
          print("[0 1 2]")
          print("[3 4 5]")
          print("[6 7 8]")
@@ -33,7 +32,8 @@ def user_position_input():
          raw_position = input("select a position: ") 
 
     #CheckPoints
-         if not raw_position.isdigit():                  
+         if not raw_position.isdigit():
+            print("Invalid input. Not a digit")              
             continue                   
             
          position = int(raw_position) #using raw_position first bc the input could be something other than a number. so if i tried to typecast it, an error would occour AND .isdigit() only works for strings
@@ -103,13 +103,14 @@ def check_victory(table):
 isGameOn = game_still_on() #ask's if he/she wants to play
 
 if isGameOn:
+   print("Welcome to tic tac toe!")
    while not victory and plays < 9:
      display_table(table) 
      position = user_position_input() #ask's for the position to be marked
      update_table(position)                        
      victory = check_victory(table)   #Checks for victory
      plays +=1
-     if not victory:  # if after 8 plays no victory was achieved(scaped the not victory loop bc plays == 9)
+   if not victory:  # if after 8 plays no victory was achieved(scaped the not victory loop bc plays == 9)
         print("TIE :| ") 
 
 
