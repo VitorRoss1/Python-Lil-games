@@ -44,7 +44,7 @@ class Playaa:    #hold current list of cards, remove/add cards, add 1 or +1 card
 
     def __init__(self,name):
         self.name = name
-        self.your_cards = []
+        self.your_cards = [] #has to be  every beggining turn
 
     def remove_one(self):
         return self.your_cards.pop(0) #pops first(leftmost) card 
