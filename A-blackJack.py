@@ -4,7 +4,6 @@
 #The player must be able to pick their betting amount.
 #You need to keep track of the player's total money.
 #You need to alert the player of wins, losses, or busts, etc...
-#2version:
 #Feel free to expand this game. Try including multiple players. 
 #Try adding in Double-Down and card splits! 
 
@@ -16,16 +15,17 @@ suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs') #tuple for immutability
 ranks = ('Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King','Ace')
  #translating string to integer using a dictionary
 values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6,'Seven':7, 'Eight':8,
-          'Nine':9,'Ten':10, 'Jack':10, 'Queen':10, 'King':10, 'Ace':1  11} #!!!!!!!
+          'Nine':9,'Ten':10, 'Jack':10, 'Queen':10, 'King':10, 'Ace': 11} # if sum>21 and ace: sum-10!!!!!!!
 
 class Card:
     def __init__(self,suit,rank):
         self.suit = suit
         self.rank = rank
-        self.value = values[rank]
+        self.value = values[rank]  #value[key]
 
     def __str__(self): #print output for the class
         return f"{self.rank} of {self.suit}"
+
 
 class Baralho:    
     def __init__(self):
@@ -51,6 +51,7 @@ class Baralho:
         elif choice == 'N':
             return False
 
+
 class Player:
     def __init__(self):
         self.bank = 1000
@@ -65,24 +66,37 @@ class Player:
         for cards in self.player_cards:
           self.player_cards.pop() #.pop(default) = [-1]  (removes and returns it)
 
-    def hit_or_stand():
-        choice = 'default'                      
-        while choice not in ['hit','stand']:          
-           choice = input("type hit or stand:  (please, type exactly as it's written) ")
+    def hit_or_stand():                      
+        while True:          
+          choice = input("Type hit or stand:  (please, type exactly as it's written).")
          
-         while choice == 'hit':
+          if choice == 'hit':
            player.hit(new_deck.deal_one())
            print(player)
-           continue
+           #checkbust21
    
-        elif choice == 'stand':
+          elif choice == 'stand':
+            print("Player stands. Dealer's turn.")
+            break
+          
+          else:
+            print("Invalid option, try again.")
+    
+    def add(self):
+       #Se passou de 21 e houver ases, reduza 10 (transforma 11 em 1)
+       for cards in self.player_cards:
+         self.sum += cards.value    #cards is one of the card objects in player_cards list;   cards.value = values[card.rank]
+        if sum > 21 and ace
+         
+             #integrate checkbustor21 to add function
 
-
-
-
-    def checkbust_or_21(self):
-        #if self.sum == 21 or self.sum > 21 
+    def checkbust_or_21(self): 
+        if self.sum == 21:
+           print(f"{player} \nBLACKJACK")
+           gameOn = False 
+        elif self.sum > 21 
        
+
     def __str__(self):
      return f" Cards: {self.player_cards} sum:{self.sum}"
 
@@ -97,9 +111,13 @@ gameOn = new_deck.game_still_on() #ask's if wants to play
 new_deck.shuffle()
 
 
-while gameOn:
+if gameOn:
+
  #new round
-    player.clear_old_cards()
+ player.clear_old_cards()
+
+ #
+ while not victory and bank > 0:
 
  #place Bet
     player.bet = input(f"How much u wanna bet?    Your balance:{player.bank}")
@@ -115,15 +133,19 @@ while gameOn:
 
  #Hit and stand
     player.hit_or_stand()
-    player.checkbust_or_21()
+    player.checkbust_or_21() 
+
 
  #COMPUTERS TURN(after stand)
     #deal +1 for computer(if stand)
     player.hit(new_deck.deal_one())
     print(f"Dealer has {player}")
     #computer automated hit:
-    #if player.score > computer {computer.hit()}
+    #if player.sum > computer:
+       #computer.hit()
     #check if computer.score > 21 {bust}
+       #computer.checkbust_or_21()
+    
 
     #Check result
     #if player.score == 21 {win}
@@ -131,11 +153,8 @@ while gameOn:
     #if player.score > computer {lost}
 
     #check game
-    gameChoise = input("Press 0 to KEEP PLAYING or 1 to LEAVE ")
-    if gameChoise == 1:
-       gameOn = False
-    #play1more or leave
-    #if play1more keep the balance
+        #play1more or leave
+        #if play1more keep the balance
 
 
 

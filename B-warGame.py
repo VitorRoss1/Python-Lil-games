@@ -114,7 +114,7 @@ while gameOn:
             player1.add_card_s(playerOne_roundCards) #returning from battle
             random.shuffle(player1.your_cards) #shuffling won cards!
 
-        elif playerOne_roundCards[-1].value < playerTwo_roundCards[-1].value:
+        elif playerOne_roundCards[-1].value < playerTwo_roundCards[-1].value: #cardObject.value = values[rank]  (dict[key2] == value2)
             war_mode = False
             player2.add_card_s(playerOne_roundCards)
             player2.add_card_s(playerTwo_roundCards)
