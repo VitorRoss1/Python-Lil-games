@@ -8,7 +8,8 @@
 #Try adding in Double-Down and card splits! 
 
 
-import random
+import random 
+from abc import ABC, abstractmethod
 
 #Global variables
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs') #tuple for immutability
@@ -51,12 +52,9 @@ class Baralho:
         elif choice == 'N':
             return False
 
-
-class Player:
+class Game:
     def __init__(self):
-        self.bank = 1000
-        self.player_cards = []
-        self.bet = 0
+        #self.playerXComputer_cards = []
         self.sum = 0
 
     def hit(self,new_card):
@@ -65,6 +63,18 @@ class Player:
     def clear_old_cards(self):
         for cards in self.player_cards:
           self.player_cards.pop() #.pop(default) = [-1]  (removes and returns it)
+
+    @abstractmethod
+    def add_and_check(self):
+        pass
+
+
+class Player(Game):
+    def __init__(self):
+        self.bank = 1000
+        self.player_cards = []
+        self.bet = 0
+
 
     def hit_or_stand():                      
         while True:          
@@ -82,30 +92,83 @@ class Player:
           else:
             print("Invalid option, try again.")
     
-    def add(self):
-       #Se passou de 21 e houver ases, reduza 10 (transforma 11 em 1)
+    def add_and_check(self):
+       aces = 0
        for cards in self.player_cards:
          self.sum += cards.value    #cards is one of the card objects in player_cards list;   cards.value = values[card.rank]
-        if sum > 21 and ace
          
-             #integrate checkbustor21 to add function
+         #ace counter
+         if cards.rank == "Ace":
+            aces+=1
 
-    def checkbust_or_21(self): 
-        if self.sum == 21:
-           print(f"{player} \nBLACKJACK")
-           gameOn = False 
-        elif self.sum > 21 
-       
+         #changes aces values if bigger than 21 
+         while self.sum > 21 and aces > 0: 
+           print("Changing Ace value(11 -> 1)")
+           self.sum -= 10
+           aces -= 1
+
+         #bj & bust check
+         if self.sum == 21:
+           self.bank += self.bet
+           print(f"{player} BLACKJACK")
+           return False #gameOn = false
+
+         elif self.sum > 21: 
+            self.bank -= self.bet
+            print(f"{player} BUST")
+            return False #gameOn = false
+         return True
 
     def __str__(self):
-     return f" Cards: {self.player_cards} sum:{self.sum}"
+     return f" Your Cards: {self.player_cards} sum:{self.sum}"
+
+
+class Computer(Game):
+   def __init__(self):
+      self.computer_cards = []
+
+   def add_and_check(self):
+       aces = 0
+       for cards in self.computer_cards:
+         self.sum += cards.value   
+         
+         #ace counter
+         if cards.rank == "Ace":
+            aces+=1
+
+         #changes aces values if bigger than 21 
+         while self.sum > 21 and aces > 0: 
+           print("Changing Ace value(11 -> 1)")
+           self.sum -= 10
+           aces -= 1
+
+
+         #Game check
+         if self.sum > player.sum:
+           self.bank += self.bet
+           print(f"{player} Dealer has Won")
+           return False #gameOn = false
+
+         elif self.sum > 21: 
+            self.bank -= self.bet
+            print(f"computer {co} BUST")
+            return False #gameOn = false
+         
+         elif self.sum == player.sum:
+
+       return True
+    #override add_check with computer implementation
+
+   def __str__(self):
+     return f" Computer Cards: {self.computer_cards} sum:{self.sum}"
+   
 
 
 
 #LOGIG------------------------------------------------------------------------------------------------------------------------------------------
 #setup
 player = Player()
-computer = Player()
+computer = Computer()
 new_deck = Baralho()
 gameOn = new_deck.game_still_on() #ask's if wants to play
 new_deck.shuffle()
@@ -114,10 +177,9 @@ new_deck.shuffle()
 if gameOn:
 
  #new round
- player.clear_old_cards()
+    player.clear_old_cards()
 
- #
- while not victory and bank > 0:
+ # while not victory and bank > 0:
 
  #place Bet
     player.bet = input(f"How much u wanna bet?    Your balance:{player.bank}")
@@ -133,16 +195,17 @@ if gameOn:
 
  #Hit and stand
     player.hit_or_stand()
-    player.checkbust_or_21() 
-
-
+    gameOn = player.add_and_check()
+     
  #COMPUTERS TURN(after stand)
     #deal +1 for computer(if stand)
-    player.hit(new_deck.deal_one())
+    computer.hit(new_deck.deal_one())
     print(f"Dealer has {player}")
+
     #computer automated hit:
-    #if player.sum > computer:
-       #computer.hit()
+    if player.sum > computer.sum:
+       computer.hit()
+       if computer.sum >
     #check if computer.score > 21 {bust}
        #computer.checkbust_or_21()
     
