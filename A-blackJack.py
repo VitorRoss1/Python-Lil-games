@@ -31,7 +31,7 @@ class Baralho:
     def __init__(self):
         self.all_cards = []
 
-        for suit in suits: #populating all_cards
+        for suit in suits: #instanciating card's and populating all_cards
             for rank in ranks:
                 new_card = Card(suit,rank) 
                 self.all_cards.append(new_card)
@@ -42,26 +42,49 @@ class Baralho:
     def deal_one(self):
         return self.all_cards.pop() #.pop(default) = all_cards[-1]  (removes and returns it)
     
+    def game_still_on():
+        choice = 'default'                      #so it goes through the while on the first time
+        while choice not in ['Y','N']:          #keep asking
+            choice = input("Wanna play, mate?  Y/N ")
+        if choice == 'Y':
+            return True
+        elif choice == 'N':
+            return False
 
 class Player:
     def __init__(self):
         self.bank = 1000
         self.player_cards = []
+        self.bet = 0
+        self.sum = 0
 
-    def add_cards(self,new_card_s):
-        self.player_cards_cards.append(new_card_s) #explicit: new_card_s[-1]
+    def hit(self,new_card):
+        self.player_cards.append(new_card) #explicit: new_card[-1] rightmost
 
-    def hit(self):
+    def clear_old_cards(self):
+        for cards in self.player_cards:
+          self.player_cards.pop() #.pop(default) = [-1]  (removes and returns it)
 
-    
-    def stand(self):
+    def hit_or_stand():
+        choice = 'default'                      
+        while choice not in ['hit','stand']:          
+           choice = input("type hit or stand:  (please, type exactly as it's written) ")
+         
+         while choice == 'hit':
+           player.hit(new_deck.deal_one())
+           print(player)
+           continue
+   
+        elif choice == 'stand':
 
-    def bet(self):
-        print(f"How much u wanna bet? Your balance:{self.bank}")
 
+
+
+    def checkbust_or_21(self):
+        #if self.sum == 21 or self.sum > 21 
+       
     def __str__(self):
-     return f"You have {self.cards} and ${self.bank}"
-
+     return f" Cards: {self.player_cards} sum:{self.sum}"
 
 
 
@@ -70,34 +93,49 @@ class Player:
 player = Player()
 computer = Player()
 new_deck = Baralho()
-new_deck.shuffle() 
+gameOn = new_deck.game_still_on() #ask's if wants to play
+new_deck.shuffle()
 
-print("Welcome to BlackJack 21")
 
-#shuffle
+while gameOn:
+ #new round
+    player.clear_old_cards()
 
-#while gameOn{
+ #place Bet
+    player.bet = input(f"How much u wanna bet?    Your balance:{player.bank}")
 
-#place Bet
+ #deal 2 (hit 2x) cards for player
+    for i in range(2):
+      player.hit(new_deck.deal_one())
+      print(player)
 
-#deal 2 cards for player
-#deal 1 for computer
+ #deal 1 for computer
+    player.hit(new_deck.deal_one())
+    print(f"Dealer has {player} and XX")
 
-#Hit and stand functions (by request)
+ #Hit and stand
+    player.hit_or_stand()
+    player.checkbust_or_21()
 
-#COMPUTERS TURN
-#deal +1 for computer(if stand)
+ #COMPUTERS TURN(after stand)
+    #deal +1 for computer(if stand)
+    player.hit(new_deck.deal_one())
+    print(f"Dealer has {player}")
+    #computer automated hit:
+    #if player.score > computer {computer.hit()}
+    #check if computer.score > 21 {bust}
 
-#computer automated hit:
-#if player.score > computer {computer.hit()}
-#check if computer.score > 21 {bust}
+    #Check result
+    #if player.score == 21 {win}
+    #if player.score > 21  {bust}
+    #if player.score > computer {lost}
 
-#Check result
-#if player.score == 21 {win}
-#if player.score > 21  {bust}
-#if player.score > computer {lost}
-
-#new game
+    #check game
+    gameChoise = input("Press 0 to KEEP PLAYING or 1 to LEAVE ")
+    if gameChoise == 1:
+       gameOn = False
+    #play1more or leave
+    #if play1more keep the balance
 
 
 
