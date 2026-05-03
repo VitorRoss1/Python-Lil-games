@@ -43,6 +43,8 @@ class Baralho:
     def deal_one(self):
         return self.all_cards.pop() #.pop(default) = all_cards[-1]  (removes and returns it)
     
+
+    @staticmethod                                   # @staticmethod:
     def game_still_on():
         choice = 'default'                      #so it goes through the while on the first time
         while choice not in ['Y','N']:          #keep asking
@@ -52,7 +54,7 @@ class Baralho:
         elif choice == 'N':
             return False
 
-class Game:
+class Game(ABC): #inheritence from ABC
     def __init__(self):
         #self.playerXComputer_cards = []
         self.sum = 0
@@ -62,11 +64,28 @@ class Game:
 
     def clear_old_cards(self):
         for cards in self.player_cards:
-          self.player_cards.pop() #.pop(default) = [-1]  (removes and returns it)
+          self.player_cards = [] #empty list instead of .pop() returns leave the loop???/??
 
-    @abstractmethod
-    def add_and_check(self):
-        pass
+    @abstractmethod #classes with abstract methods CANT be instanciated.
+    def add_and_check(self): #subclasses do the implementation,like an interface contract with the child classes
+        pass 
+
+    @staticmethod                                   # @staticmethod
+    def result_check(): 
+         if computer.sum > 21:
+           player.bank += player.bet
+           print(f"Dealer BUST! You win! Winnings: {player.bet}")
+
+         elif computer.sum > player.sum:
+           player.bank -= player.bet
+           print(f"You lose! Your losses:{player.bet}")
+         
+         elif computer.sum == player.sum:
+            print(f"TIE! Bet returned")
+         
+         elif computer.sum < player.sum:
+            player.bank += player.bet
+            print(f"You have Won! Your winnings:{player.bet}")
 
 
 class Player(Game):
@@ -74,25 +93,9 @@ class Player(Game):
         self.bank = 1000
         self.player_cards = []
         self.bet = 0
-
-
-    def hit_or_stand():                      
-        while True:          
-          choice = input("Type hit or stand:  (please, type exactly as it's written).")
-         
-          if choice == 'hit':
-           player.hit(new_deck.deal_one())
-           print(player)
-           #checkbust21
-   
-          elif choice == 'stand':
-            print("Player stands. Dealer's turn.")
-            break
-          
-          else:
-            print("Invalid option, try again.")
     
     def add_and_check(self):
+       self.sum = 0 #reset bf readding
        aces = 0
        for cards in self.player_cards:
          self.sum += cards.value    #cards is one of the card objects in player_cards list;   cards.value = values[card.rank]
@@ -118,6 +121,23 @@ class Player(Game):
             print(f"{player} BUST")
             return False #gameOn = false
          return True
+    
+    @staticmethod                                   #@staticmethod
+    def hit_or_stand():                      
+        while True:          
+          choice = input("Type hit or stand:  (please, type exactly as it's written).")
+         
+          if choice == 'hit':
+           player.hit(new_deck.deal_one())
+           print(player)
+           player.add_and_check() #check for bust/blackjack
+   
+          elif choice == 'stand':
+            print("Player stands. Dealer's turn.")
+            break
+          
+          else:
+            print("Invalid option, try again.")
 
     def __str__(self):
      return f" Your Cards: {self.player_cards} sum:{self.sum}"
@@ -125,10 +145,13 @@ class Player(Game):
 
 class Computer(Game):
    def __init__(self):
-      self.computer_cards = []
+      super().__init__()                          #faltava super().__init__() para herdar self.sum
+      self.player_cards = []                      # Game.hit() usa player_cards
 
    def add_and_check(self):
        aces = 0
+       self.sum = 0 # reset bf readd
+
        for cards in self.computer_cards:
          self.sum += cards.value   
          
@@ -142,25 +165,16 @@ class Computer(Game):
            self.sum -= 10
            aces -= 1
 
-
-         #Game check
-         if self.sum > player.sum:
-           self.bank += self.bet
-           print(f"{player} Dealer has Won")
-           return False #gameOn = false
-
-         elif self.sum > 21: 
+         if self.sum > 21: 
             self.bank -= self.bet
-            print(f"computer {co} BUST")
+            print(f"computer {computer} BUST")
             return False #gameOn = false
-         
-         elif self.sum == player.sum:
 
        return True
     #override add_check with computer implementation
 
    def __str__(self):
-     return f" Computer Cards: {self.computer_cards} sum:{self.sum}"
+     return f" Dealer Cards: {self.computer_cards} sum:{self.sum}"
    
 
 
@@ -170,16 +184,16 @@ class Computer(Game):
 player = Player()
 computer = Computer()
 new_deck = Baralho()
-gameOn = new_deck.game_still_on() #ask's if wants to play
 new_deck.shuffle()
+gameOn = Baralho.game_still_on() #ask's if wants to play  static method dont need instanciate to call can call directly through class
 
-
-if gameOn:
+while gameOn and player.bank > 0:
 
  #new round
     player.clear_old_cards()
-
- # while not victory and bank > 0:
+    computer.clear_old_cards()
+    player.sum = 0
+    computer.sum = 0
 
  #place Bet
     player.bet = input(f"How much u wanna bet?    Your balance:{player.bank}")
@@ -191,30 +205,24 @@ if gameOn:
 
  #deal 1 for computer
     player.hit(new_deck.deal_one())
-    print(f"Dealer has {player} and XX")
+    print(f"{computer} and XX")
 
  #Hit and stand
     player.hit_or_stand()
     gameOn = player.add_and_check()
      
  #COMPUTERS TURN(after stand)
-    #deal +1 for computer(if stand)
+ #deal +1 for computer(if stand)
     computer.hit(new_deck.deal_one())
-    print(f"Dealer has {player}")
+    print({computer})
 
     #computer automated hit:
-    if player.sum > computer.sum:
+    while player.sum > computer.sum:
        computer.hit()
-       if computer.sum >
-    #check if computer.score > 21 {bust}
-       #computer.checkbust_or_21()
+       computer.add_and_check()
+ #Check result
+    computer.result_check()
     
-
-    #Check result
-    #if player.score == 21 {win}
-    #if player.score > 21  {bust}
-    #if player.score > computer {lost}
-
     #check game
         #play1more or leave
         #if play1more keep the balance
