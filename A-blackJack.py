@@ -49,7 +49,9 @@ class Baralho:
         choice = 'default'                      #so it goes through the while on the first time
         while choice not in ['Y','N']:          #keep asking
             choice = input("Wanna play, mate?  Y/N ")
-            return choice == 'Y' #true if =='Y', false if not('N')
+            if choice == 'N':
+               print("Alright. See ya")
+        return choice == 'Y' #true if =='Y', false if not('N')
 
 # ---------------------------------------------------------------------------
 class Game(ABC): #inheritence from ABC
@@ -72,8 +74,8 @@ class Game(ABC): #inheritence from ABC
 
      #adder and ace counter 
      for card in self.cards:  #cards is one of the card objects in cards list;  
+        self.sum += card.value # card.value = values[card.rank]; dict[key]
         if card.rank == 'Ace': 
-           self.sum += card.value # card.value = values[card.rank]; dict[key]
            aces += 1
 
      while self.sum > 21 and aces > 0:
@@ -146,7 +148,7 @@ class Player(Game):
           if choice == 'hit':
            player.hit(new_deck.deal_one())
            print(player)
-           if not player.add_and_check() #stop the loop if bust/blackjack (false)
+           if not player.add_and_check(): #stop the loop if bust/blackjack (false)
               return False  #if addandcheck = false = bj or bust then hitorstand returns false
             
           elif choice == 'stand':
@@ -157,8 +159,12 @@ class Player(Game):
             print("Invalid option, try again.")
 
     def __str__(self):
-     
-     return f" Your Cards: {self.player_cards} sum:{self.sum}"
+        cards_list = []
+        for card in self.cards:
+            cards_list.append(str(card)) #1st populate a list of strings
+
+        cards_str = ', '.join(cards_list) #2nd join ,with a comma, the strings of the list into 1 single string
+        return f" Your Cards: {cards_str} sum: {self.sum}"
 
 # ---------------------------------------------------------------------------
 class Computer(Game):
@@ -166,24 +172,22 @@ class Computer(Game):
       super().__init__()                         
 
    def add_and_check(self):
-       aces = 0
-       self.sum = 0 # reset bf readd
+    self.calculate_sum()
 
-       for cards in self.computer_cards:
-         self.calculate_sum()
-         
-         if self.sum > 21: 
-            print(f"{self} Dealer BUST") #X {computer} X instead {self}
-            return False #gameOn = false
-
-       return True
-    #override add_check with computer implementation
+    if self.sum > 21: 
+        print(f"{self} Dealer BUST") #X {computer} X instead {self}
+        return False #gameOn = false
+    return True
 
    def __str__(self):
-     return f" Dealer Cards: {self.computer_cards} sum:{self.sum}"
+     cards_list = []
+     for card in self.cards:
+         cards_list.append(str(card))
+
+     cards_str = ', '.join(cards_list) 
+     return f" Dealer Cards: {cards_str} sum: {self.sum}"
    
 
- 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #LOGIG
 player = Player()
@@ -195,54 +199,55 @@ gameOn = Baralho.ask_play() #ask's if wants to play  static method dont need ins
 
 while gameOn and player.bank > 0:
 
- #reset round
+    #reset round
     player.clear_old_cards()
     computer.clear_old_cards()
 
- #place bet
+    #place bet
     player.place_bet()
 
- #deal 2 (hit 2x) cards for player
+    #deal 2 (hit 2x) cards for player
     for i in range(2):
        player.hit(new_deck.deal_one())
 
     player.add_and_check() #check for bj
     print(player)
 
- #deal 1 for dealer
+    #deal 1 for dealer
     computer.hit(new_deck.deal_one())
     print(f"Dealer shows: {computer} and [hidden]")
 
- #Hit or stand
-    gameOn = Player.hit_or_stand() #false if
-
-    player.hit_or_stand()
-    gameOn = player.add_and_check()
+    #Hit or stand
+    gameOn = Player.hit_or_stand() #false if =='hit'
      
- #computer's turn(after stand)
+    #computer's turn(after stand)
     if gameOn: #addandcheck will return true if stand and false if hit on the input asked(true = stand)
         computer.hit(new_deck.deal_one()) #deal +1 for computer
         computer.add_and_check() #check for bust
-        print({computer})
+        print(computer)
 
-    #computer automated hit (rule: hit on <=17 stand on >17):
+        #computer automated hit (rule: hit on <=17 stand on >17):
         while player.sum > computer.sum or computer.sum < 17 :
           print("Dealer hits...")
           computer.hit(new_deck.deal_one())
           computer.add_and_check() #busted?
           print(computer)
 
- #Check result
-    Game.result_check()
+        #Check result
+        Game.result_check()
 
- #Check balance
+        
+    #Check balance
     print(f"Your balance: {player.bank}")
 
     if player.bank <= 0:
      print("You're out of money! Game over.")
      break
+
+    gameOn = Baralho.ask_play()
     
 print("Thanks for playing!")
+
 
 
 
