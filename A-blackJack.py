@@ -47,11 +47,11 @@ class Baralho:
     @staticmethod                                   # @staticmethod:
     def ask_play():
         choice = 'default'                      #so it goes through the while on the first time
-        while choice not in ['Y','N']:          #keep asking
-            choice = input("Wanna play, mate?  Y/N ")
-            if choice == 'N':
+        while choice not in ['y','n']:          #keep asking
+            choice = input("Wanna play, mate?  y/n ")
+            if choice == 'n':
                print("Alright. See ya")
-        return choice == 'Y' #true if =='Y', false if not('N')
+        return choice == 'y' #true if =='Y', false if not('N')
 
 # ---------------------------------------------------------------------------
 class Game(ABC): #inheritence from ABC
@@ -117,7 +117,7 @@ class Player(Game):
     def place_bet(self): #place Bet(with error handling)
      while True:
       try:
-          player.bet = int(input(f"How much u wanna bet? balance:{player.bank}"))
+          player.bet = int(input(f"How much u wanna bet? balance: {player.bank} \n"))
           if 0 < player.bet <= player.bank: #if valid break
              break
           print(f"Bet must be between 1 and {player.bank}.") #will be printed if bet bigger than balance or smaller than zero('if' didnt catch it) and it will iterate
@@ -143,14 +143,15 @@ class Player(Game):
     def hit_or_stand():
         #gameOn = return                       
         while True:          
-          choice = input("Type hit or stand:  (please, type exactly as it's written).")
+          choice = input("Type hit or stand:  (please, type exactly as it's written)\n")
          
           if choice == 'hit':
            player.hit(new_deck.deal_one())
-           print(player)
-           if not player.add_and_check(): #stop the loop if bust/blackjack (false)
+
+           if not player.add_and_check(): #stop the loop if bust/blackjack (false) and also does the calculation (addandcheck)
               return False  #if addandcheck = false = bj or bust then hitorstand returns false
-            
+           print(player)
+
           elif choice == 'stand':
             print("Player stands. Dealer's turn.")
             return True  #to leave while loop; 
@@ -164,7 +165,7 @@ class Player(Game):
             cards_list.append(str(card)) #1st populate a list of strings
 
         cards_str = ', '.join(cards_list) #2nd join ,with a comma, the strings of the list into 1 single string
-        return f" Your Cards: {cards_str} sum: {self.sum}"
+        return f"Your Cards: {cards_str} sum: {self.sum}"
 
 # ---------------------------------------------------------------------------
 class Computer(Game):
@@ -185,7 +186,7 @@ class Computer(Game):
          cards_list.append(str(card))
 
      cards_str = ', '.join(cards_list) 
-     return f" Dealer Cards: {cards_str} sum: {self.sum}"
+     return f"Dealer Cards: {cards_str} sum: {self.sum}"
    
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -215,6 +216,7 @@ while gameOn and player.bank > 0:
 
     #deal 1 for dealer
     computer.hit(new_deck.deal_one())
+    computer.calculate_sum() #now calculates computer sum for 1 card aswell
     print(f"Dealer shows: {computer} and [hidden]")
 
     #Hit or stand
@@ -231,7 +233,8 @@ while gameOn and player.bank > 0:
           print("Dealer hits...")
           computer.hit(new_deck.deal_one())
           computer.add_and_check() #busted?
-          print(computer)
+          if computer.sum <= 21: #only prints if it didnt bust
+             print(computer)
 
         #Check result
         Game.result_check()
@@ -247,8 +250,5 @@ while gameOn and player.bank > 0:
     gameOn = Baralho.ask_play()
     
 print("Thanks for playing!")
-
-
-
 
 
