@@ -148,8 +148,9 @@ class Player(Game):
           if choice == 'hit':
            player.hit(new_deck.deal_one())
 
-           if not player.add_and_check(): #stop the loop if bust/blackjack (false) and also does the calculation (addandcheck)
-              return False  #if addandcheck = false = bj or bust then hitorstand returns false
+           if not player.add_and_check(): #stop this loop and gameOn loop if bust/blackjack (false) and also does the calculation (addandcheck)
+              return False  #if addandcheck = false = bj or bust, then hitorstand returns false
+               
            print(player)
 
           elif choice == 'stand':
@@ -211,8 +212,11 @@ while gameOn and player.bank > 0:
     for i in range(2):
        player.hit(new_deck.deal_one())
 
-    player.add_and_check() #check for bj
-    print(player)
+    if not player.add_and_check():   #func returns false if bj (or bust) on initial deal ALSO DOES THE ADD AND CHECK
+        print(f"Your balance: {player.bank}")
+        gameOn = Baralho.ask_play()
+        continue         #skip the rest of the code in the current iteration.skip dealer turn, hit_or_stand, everything
+    print(player) #only prints if no initial bj/bust
 
     #deal 1 for dealer
     computer.hit(new_deck.deal_one())
@@ -220,7 +224,7 @@ while gameOn and player.bank > 0:
     print(f"Dealer shows: {computer} and [hidden]")
 
     #Hit or stand
-    gameOn = Player.hit_or_stand() #false if =='hit'
+    gameOn = Player.hit_or_stand() #returns true if =="stand", false if busted or bj 
      
     #computer's turn(after stand)
     if gameOn: #addandcheck will return true if stand and false if hit on the input asked(true = stand)
