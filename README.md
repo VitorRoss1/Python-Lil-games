@@ -52,6 +52,17 @@ Built around an OOP hierarchy using abstract base classes <code> Game </code> as
 - Win / lose / tie / dealer bust result messages
 - Full round reset and play-again prompt
 
+#### Concepts Used
+- OOP hierarchy (ABC → Game → Player/Computer)
+- abstract methods as interface contracts
+- @staticmethod for class-level utilities
+- super().__init__() for parent state inheritance
+- encapsulation of shared logic in the base class (calculate_sum, hit, clear_cards)
+- method overriding,
+- ace adjustment logic,
+- input validation with try/except
+- boolean return values as game state signals.
+
 ##### Planned for v2:
 - Double Down
 - Card Split
