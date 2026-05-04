@@ -9,9 +9,10 @@ This repository focuses on fundamental programming concepts, clean structure, an
 
 This project contains small standalone games implemented in Python 3. Each game is designed to reinforce core programming concepts such as:
 
+- OOP (classes, inheritance, abstract methods, encapsulation)
 - Control flow
-- Functions & Classes (OOP)
 - Input validation
+- error handling
 - Loops and conditionals
 - Basic game logic
 
@@ -34,6 +35,27 @@ Python-Lil-games/
 ---
 
 ## Implemented Games
+
+###  A) Blackjack
+
+**File:** `S-blackjack.py`
+
+Player vs. automated dealer with a full betting system and balance tracking across rounds.
+Built around an OOP hierarchy using abstract base classes <code> Game </code> as the base, with <code> Player </code> and <code> Computer </code> as concrete implementations sharing common logic like sum calculation, card management, and result checking.
+
+#### Key Features
+- Betting system with balance validation and bust-out detection
+- Hit / Stand input loop
+- Automatic ace adjustment (11 → 1 to avoid bust)
+- Dealer automation: hits on ≤ 17, stands on > 17
+- Blackjack and bust detection with immediate payout/deduction
+- Win / lose / tie / dealer bust result messages
+- Full round reset and play-again prompt
+
+##### Planned for v2:
+- Double Down
+- Card Split
+- Multiple players
 
 ###  B) War Card Game
 
@@ -99,6 +121,7 @@ Ensure Python 3 is installed on your system.
 Navigate to the project directory and run a game:
 
 ```bash
+python A-blackjack.py
 python B-warGame.py
 python C-tictactoe.py
 python D-guessing.py
